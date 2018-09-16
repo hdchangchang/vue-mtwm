@@ -1,0 +1,32 @@
+$blue: #3190e8;
+$red: #c50000;
+
+// 背景图片地址和大小
+@mixin bis($url) {
+  background-image: url($url);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+//定位全屏
+@mixin allcover {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+//定位上下左右居中
+@mixin center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// 添加省略号
+@mixin ellipsis{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
