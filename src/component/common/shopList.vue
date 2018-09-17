@@ -40,8 +40,8 @@ export default {
       const h = document.documentElement
       const b = document.body
       const winH = h.clientHeight || b.clientHeight
-      const hsh = h.scrollHeight
-      const bst = h.scrollTop
+      const hsh = h.scrollHeight || b.scrollHeight
+      const bst = h.scrollTop || b.scrollTop // 有的手机h.scrollTop 为0，需要兼容
       if (bst + winH + 200 > hsh) {
         // 事件节流，防止重复提交请求
         if (this.timer) {

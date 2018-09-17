@@ -14,7 +14,12 @@ export const getNavData = () => {
 
 // 获取附件商家列表
 export const getNearbyData = () => {
-  return axios.post('ajax/v6/poi/filter')
+  return axios.post('/ajax/v6/poi/filter')
+}
+
+// 获取search页搜索信息
+export const getSearchData = () => {
+  return axios.get('/ajax/v7/poi/search')
 }
 
 // 调用百度api获取关联地址,需要跨域，

@@ -1,6 +1,6 @@
 <template>
   <section>
-    <Header></Header>
+    <Header title="选择收货地址"></Header>
     <section class="address-box">
       <div class="address-box-in">
         <span class="address-city" @click="toCity">

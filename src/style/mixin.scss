@@ -1,5 +1,8 @@
 $blue: #3190e8;
 $red: #c50000;
+$orange: #ffd600;
+
+
 
 // 背景图片地址和大小
 @mixin bis($url) {
@@ -29,4 +32,3 @@ $red: #c50000;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-

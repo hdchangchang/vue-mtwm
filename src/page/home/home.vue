@@ -8,22 +8,26 @@
                   <svg-icon icon-class="location"></svg-icon><svg-icon class="next" icon-class="next"></svg-icon>
                   {{!place?'未找到所在城市':place}}
               </div>
-              <div class="home-search">
+              <router-link class="home-search" tag="div" to="/search">
                   <svg-icon icon-class="search"></svg-icon>鸡排
-              </div>
+              </router-link>
           </div>
       </div>
       <!-- 导航 -->
       <div class="head-nav">
-          <a class="head-nav-a" v-for="item,index in navList" :key="'nav'+index"  v-if="index<8">
+          <router-link class="head-nav-a" 
+                      :to="{path:'/channel',query:{category_type:item.code,category_text:item.name}}" 
+                      v-for="item,index in navList" 
+                      :key="'nav'+index"  
+                      v-if="index<8">
               <img :src="item.url" alt="">
               <span>{{item.name}}</span>
-          </a>
+          </router-link>
       </div>
       <!-- 附近商家  -->
       <div class="home-nearby">
           <h6 class="nearby-tit">—— 附近商家 ——</h6>
-          <shopList :list="neaybyList" @loadMore="loadMore" :loadMore="loadMore"></shopList>
+          <ShopList :list="neaybyList" @loadMore="loadMore"></ShopList>
       </div>
       <Footer></Footer>
     </div>
@@ -32,7 +36,7 @@
 <script>
 
 import Footer from '@/component/footer/footer.vue'
-import shopList from '@/component/common/shopList.vue'
+import ShopList from '@/component/common/shopList.vue'
 
 import { lStorage, removeLStorage } from '@/js/utils'
 import { getNavData, getNearbyData } from '@/service'
@@ -49,7 +53,7 @@ export default {
       place: ''
     }
   },
-  components: { Footer, shopList },
+  components: { Footer, ShopList },
   computed: {
 
   },
