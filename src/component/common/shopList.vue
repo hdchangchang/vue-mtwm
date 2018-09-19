@@ -1,7 +1,7 @@
 <template>
 <div>
   <div class="shop-list">
-    <a class="shop-item" href="" v-for="item,index in list" :key="'nearby'+index">
+    <router-link :to="{path:`/restaurant/${item.mt_poi_id}/`,query:{name:item.name}}" class="shop-item" href="" v-for="item,index in list" :key="'nearby'+index">
       <div class="shop-imgbox">
         <img class="shop-img" :src="item.pic_url" alt=""/>
       </div>
@@ -17,7 +17,7 @@
             <span class="send-logo">美团专送</span>
         </p>
       </div>
-    </a>
+    </router-link>
   </div>
   <p class="loading" v-if="!loadOver">
     <svg-icon class="circle" icon-class="loading"></svg-icon>努力记载中...

@@ -1,5 +1,5 @@
 <template>
-<div class="channel-navbox">
+<div class="channel-navbox" :class="{active:activeIndex>=0}">
   <div  class="channel-nav">
     <div class="channel-item" :class="{active:activeIndex===0}" @click="showMore(0)">
       <a class="channel-a">
@@ -38,6 +38,7 @@
       333
     </div>
   </div>
+  <div class="zzc" @click="activeIndex=-1"></div>
 </div>
 </template>
 
@@ -45,7 +46,7 @@
   export default{
     data() {
       return {
-        activeIndex: 0
+        activeIndex: -1
       }
     },
     methods: {
@@ -59,18 +60,32 @@
 <style scoped lang="scss">
 .channel-navbox{
   position: relative;
+  .zzc{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.2);
+  z-index:1;
+  display: none;
+  }
+  &.active .zzc{
+    display: block;
+  }
 }
 .channel-nav{
+  position: relative;
   width:100%;
   display: flex;
   height: 0.9rem;
   border-bottom:1px solid #ccc;
   background: #fff;
+  z-index: 2;
   &.fixed{
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 2;
   }
 }
 
@@ -101,7 +116,6 @@
   border-width:1px 1px 0 0;
   transform:rotate(-45deg);
   background:inherit;
-  z-index: 2;
 }
 }
 .channel-a{
@@ -115,7 +129,7 @@
   left: 0;
   top: 0.9rem;
   background: #fff;
-  z-index: 1;
+  z-index: 2;
 }
 .navcont{
   position: relative;
@@ -131,5 +145,7 @@
     border-bottom:1px solid #ccc;
   }
 }
+
+
 </style>
 
