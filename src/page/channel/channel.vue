@@ -53,7 +53,8 @@ export default{
 
 <style scoped lang="scss">
 .channel-box{
-  padding-top: 0.9rem;
+  position: relative;
+  padding-top: .9rem;
   display: flex;
   flex-direction: column;
 }
