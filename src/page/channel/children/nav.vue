@@ -22,20 +22,40 @@
   </div>
   <div class="channel-navcont">
     <div class="navcont" v-if="activeIndex===0">
-      111
+      <dl class="navcont-dl" v-for="(item,index) in categoryFilterList" :key="index">
+        <dt class="navcont-dt">{{item.name}}</dt>
+        <dd class="navcont-dd" >
+          <span v-for="(it,idx) in item.sub_category_list" :key="idx">{{it.name}}{{'('+it.quantity+')'}}</span>
+        </dd>
+      </dl>
     </div>
     <div class="navcont" v-if="activeIndex===1">
       <ul class="sort-type">
-        <li class="sort-li">综合排序</li>
-        <li class="sort-li">销量最高</li>
-        <li class="sort-li">速递最快</li>
-        <li class="sort-li">评分最高</li>
-        <li class="sort-li">起送价最低</li>
-        <li class="sort-li">配送费最低</li>
+        <li class="sort-li" v-for="(item,index) in sortTypeList" :key="index">{{item.name}}</li>
       </ul>
     </div>
     <div class="navcont" v-if="activeIndex===2">
-      333
+      <dl class="navcont-dl2" v-for="(item,index) in activityFilterList" :key="index">
+        <dt class="navcont-dt2" v-if="item.group_title">{{item.group_title}}</dt>
+        <dd class="navcont-dd2">
+          <span v-for="(it,idx) in item.items" 
+                :key="idx" 
+                :class="it.cla"
+                v-if="item.support_multi_choice"  
+                @click="choose(it)" >
+            <img :src="it.icon" alt="" />
+            {{it.name}}
+          </span>
+          <p v-else @click="choose(it)" :class="it.cla" >
+            <img :src="it.icon" alt="" />
+            {{it.name}}
+          </p>
+        </dd>
+      </dl>
+      <div class="navcont-btn">
+        <a href="javascript:" @click="clear" >清除筛选</a>
+        <a href="javascript:" class="active">完成{{choosedNum?'('+choosedNum+')':''}}</a>
+      </div>
     </div>
   </div>
   <div class="zzc" @click="activeIndex=-1"></div>
@@ -43,21 +63,87 @@
 </template>
 
 <script>
+  import { getFilterConditions } from '@/service'
   export default{
     data() {
       return {
-        activeIndex: -1
+        activeIndex: -1,
+        activityFilterList: [],
+        categoryFilterList: [],
+        sortTypeList: []
+      }
+    },
+    computed: {
+      choosedNum() {
+        let num = 0
+        this.activityFilterList.forEach((item, index) => {
+          item.items.forEach((itm, idx) => {
+            if (itm.cla) {
+              num++
+            }
+          })
+        })
+        return num
       }
     },
     methods: {
       showMore(index) {
-        this.activeIndex = index
+        if (this.activeIndex === index) {
+          this.activeIndex = -1
+        } else {
+          this.activeIndex = index
+        }
+      },
+      choose(item) {
+        // 这里是下面???不生效的原因，必须copy一份出来，vue直接更改属性不会实时更新
+        const activityFilterList = [...this.activityFilterList]
+        activityFilterList.forEach((itm, index) => {
+          // 多选
+          if (itm.support_multi_choice === 1) {
+            itm.items.forEach((it, idx) => {
+              if (it.code === item.code) {
+                it.cla = !it.cla ? { active: true } : undefined
+              }
+            })
+          } else { // 单选
+            itm.items.forEach((it, idx) => {
+              if (itm.items.some((em) => {
+                return em.code === item.code
+              })) {
+                it.cla = undefined
+                if (it.code === item.code) {
+                  it.cla = { active: true }
+                }
+              }
+            })
+          }
+        })
+        this.activityFilterList = activityFilterList // ???这里为何不能实时更新
+        console.log(this.activityFilterList)
+      },
+      clear() {
+        const activityFilterList = [...this.activityFilterList]
+        activityFilterList.forEach((item, index) => {
+          item.items.forEach((itm, idx) => {
+            itm.cla = undefined
+          })
+        })
+        this.activityFilterList = activityFilterList
       }
+    },
+    mounted() {
+      getFilterConditions().then((res) => {
+        const lists = res.data.data
+        this.activityFilterList = lists.activity_filter_list
+        this.categoryFilterList = lists.category_filter_list
+        this.sortTypeList = lists.sort_type_list
+      })
     }
   }
 </script>
 
 <style scoped lang="scss">
+@import '@/style/mixin.scss';
 .channel-navbox{
   position: relative;
   .zzc{
@@ -126,15 +212,17 @@
 .channel-navcont{
   position: absolute;
   width: 100%;
+  max-height:80vh;
   left: 0;
   top: 0.9rem;
   background: #fff;
   z-index: 2;
+  overflow: scroll;
 }
 .navcont{
   position: relative;
   background:inherit;
-
+  font-size: 0.24rem;
 }
 
 .sort-type{
@@ -146,6 +234,74 @@
   }
 }
 
+.navcont-dl{
+  margin-bottom:.2rem;
+  .navcont-dt{
+    width:100%;
+    background: #efefef;
+    height: 0.6rem;
+    line-height: 0.6rem;
+    padding: 0 .2rem;
+    font-size: 0.28rem;
+  }
+  .navcont-dd{
+    display: flex;
+    flex-wrap: wrap;
+    padding:.2rem .3rem 0 .3rem;
+    span{
+      display: inline-block;
+      width: 30%;
+      margin: 1.6%;
+      padding: .1rem;
+      border:1px solid #ccc;
+      text-align: center;
+      @include ellipsis;
+    }
+  }
+}
 
+.navcont-dl2{
+  @extend .navcont-dl;
+  .navcont-dt2{
+    @extend .navcont-dt;
+
+    background: none;
+  }
+  .navcont-dd2{
+    @extend .navcont-dd;
+    span.active{
+      border-color:$orange;
+      background:transparentize($orange,0.8);
+    }
+    img{
+        vertical-align: middle;
+    }
+    p{
+      line-height: 0.8rem;
+      width: 100%;
+      border-bottom:1px solid #ccc;
+      &.active{
+        border-color:$orange;
+        background:transparentize($orange,0.8);
+      }
+    }
+  }
+}
+.navcont-btn{
+  width: 100%;
+  display: flex;
+  font-size: 0.28rem;
+  a{
+    display: inline-block;
+    width: 50%;
+    height: 0.9rem;
+    line-height: 0.9rem;
+    text-align: center;
+    border:1px solid #ccc;
+    &.active{
+      background: $orange;
+    }
+  }
+}
 </style>
 

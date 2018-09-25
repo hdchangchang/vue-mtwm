@@ -35,7 +35,7 @@ export const getRelativePlace = (keyword, city) => {
   })
 }
 
-// 根据坐标值获取具体位置
+// 调用百度api根据坐标值获取具体位置
 export const getLocation = (location) => {
   return new Promise((resolve, reject) => {
     jsonp(`http://api.map.baidu.com/geocoder/v2/?&location=${location}&output=json&pois=1&ak=UBxOS1GrDEBjfsGDhGWFq2jfI6r54PTj`, null, function(err, data) {
@@ -46,5 +46,10 @@ export const getLocation = (location) => {
       }
     })
   })
+}
+
+// 列表页面筛选条件获取
+export const getFilterConditions = () => {
+  return axios.get('/ajax/v6/poi/getfilterconditions')
 }
 
